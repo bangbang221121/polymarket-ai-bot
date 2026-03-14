@@ -6,12 +6,22 @@
 - 테스트 후 소액부터 시작하세요
 - 연속 손실 가능성을 반드시 고려하세요
 
+## 버전 선택
+
+이 프로젝트는 세 가지 버전을 제공합니다:
+
+| 버전 | 파일 | 특징 | 사용 사례 |
+|------|------|------|----------|
+| **단순 봇** | `polymarket_ai_bot.py` | 규칙 기반 + GPT 보조 | 안정적, 예측 가능 |
+| **멀티 에이전트** | `multi_agent_system.py` | 실시간 협력 에이전트 | 빠른 반응, 합의 결정 |
+| **완전 자율 AI** | `autonomous_ai_agents.py` | 스스로 학습/결정하는 AI | 최첨단, 자율적 |
+
 ## 설치
 
 ```bash
 # 1. 저장소 클론
-git clone <repo-url>
-cd polymarket-bot
+git clone https://github.com/bangbang221121/polymarket-ai-bot.git
+cd polymarket-ai-bot
 
 # 2. 가상환경 생성
 python -m venv venv
@@ -24,7 +34,7 @@ pip install -r requirements.txt
 
 ## 환경 변수 설정
 
-`.env` 파일을 생성하거나 환경 변수를 설정하세요:
+`.env` 파일을 생성하세요:
 
 ```bash
 # Polymarket API 인증 (https://polymarket.com/settings/api-keys)
@@ -46,6 +56,47 @@ export MAX_DAILY_LOSS="100"   # 일일 최대 손실 한도 (USDT)
 export BTC_MARKET_ID="0x..."  # Bitcoin Up/Down 5min 시장 토큰 ID
 export ETH_MARKET_ID="0x..."  # Ethereum Up/Down 5min 시장 토큰 ID
 ```
+
+## 버전별 실행 방법
+
+### 1. 단순 봇 버전 (규칙 기반)
+
+```bash
+python polymarket_ai_bot.py
+```
+
+- 5분 간격으로 실행
+- 기술적 지표(RSI, MACD) + GPT 분석
+- 단일 AI가 모든 결정
+
+### 2. 멀티 에이전트 버전 (실시간 협력)
+
+```bash
+python multi_agent_system.py
+```
+
+- 1초 간격 실시간 모니터링
+- 여러 전문 에이전트가 협력
+- 메시지 버스로 신호 교환
+- 합의(Consensus) 기반 최종 결정
+
+### 3. 완전 자율 AI 버전 (스스로 학습)
+
+```bash
+python autonomous_ai_agents.py
+```
+
+**에이전트 구성:**
+- **MarketAnalystAgent**: 기술적/펀더멘털 분석
+- **TopTraderLearningAgent**: 성공 트레이더 전략 학습/모방
+- **NewsSentimentAgent**: 뉴스/소셜 감성 분석
+- **MetaLearningAgent**: 모든 에이전트 결정 종합 및 전략 개선
+
+**특징:**
+- 각 에이전트가 **독립적으로 사고** (LLM 호출)
+- 거래 결과로부터 **스스로 학습**
+- 전략을 **자율적으로 개선**
+- 탑 트레이더 전략 **모방 및 진화**
 
 ## 시장 ID 찾기
 
@@ -97,14 +148,6 @@ LIMIT 20
 }
 ```
 
-## 실행
-
-```bash
-# 환경 변수 로드 후 실행
-source .env
-python polymarket_ai_bot.py
-```
-
 ## 모의 거래 테스트
 
 실제 자금을 사용하기 전에 반드시 테스트하세요:
@@ -112,64 +155,54 @@ python polymarket_ai_bot.py
 1. `BET_AMOUNT`를 매우 작게 설정 (0.01 USDT)
 2. `MAX_DAILY_LOSS`를 낮게 설정
 3. 24시간 이상 모니터링
-4. 로그 확인: `tail -f polymarket_bot.log`
+4. 로그 확인: `tail -f autonomous_agents.log`
 
 ## 프로젝트 구조
 
 ```
-polymarket-bot/
-├── polymarket_ai_bot.py   # 메인 봇 코드
-├── requirements.txt       # Python 의존성
-├── .env.example          # 환경 변수 예시
-├── README.md             # 이 파일
-└── polymarket_bot.db     # SQLite 데이터베이스 (실행 후 생성)
-```
-
-## 데이터베이스 스키마
-
-봇은 SQLite를 사용하여 다음 데이터를 저장합니다:
-- `market_data`: 시장 가격 이력
-- `ai_decisions`: AI 판단 기록
-- `trades`: 실행된 거래 내역
-- `trader_positions`: 상위 트레이더 포지션
-
-## 전략 커스터마이징
-
-`AIAnalyzer.analyze_market()` 메서드를 수정하여 자신만의 전략을 추가하세요:
-
-```python
-# 커스텀 지표 추가 예시
-def analyze_market(self, ...):
-    # 기존 지표...
-    
-    # 볼린저 밴드
-    bb_upper, bb_lower = self._calculate_bollinger_bands(prices)
-    
-    # 마켓 심리 분석
-    sentiment = self._analyze_market_sentiment(recent_data)
-    
-    # AI 프롬프트에 추가...
+polymarket-ai-bot/
+├── polymarket_ai_bot.py        # 단순 봇 버전
+├── multi_agent_system.py        # 멀티 에이전트 버전
+├── autonomous_ai_agents.py      # 완전 자율 AI 버전
+├── requirements.txt             # Python 의존성
+├── .env.example                 # 환경 변수 예시
+└── README.md                    # 이 파일
 ```
 
 ## 모니터링
 
 ```bash
-# 실시간 로그 확인
+# 실시간 로그 확인 (버전별)
 tail -f polymarket_bot.log
+tail -f agent_system.log
+tail -f autonomous_agents.log
 
-# 오늘의 거래 내역 확인
-sqlite3 polymarket_bot.db "SELECT * FROM trades WHERE timestamp LIKE '$(date +%Y-%m-%d)%' ORDER BY timestamp DESC;"
+# 데이터베이스 확인
+sqlite3 autonomous_agents.db "SELECT * FROM agent_decisions ORDER BY timestamp DESC LIMIT 10;"
 
 # AI 결정 통계
-sqlite3 polymarket_bot.db "SELECT decision, COUNT(*), AVG(confidence) FROM ai_decisions GROUP BY decision;"
+sqlite3 autonomous_agents.db "SELECT agent_role, action, COUNT(*), AVG(confidence) FROM agent_decisions GROUP BY agent_role, action;"
 ```
+
+## 버전 비교 상세
+
+### 단순 봇
+- **장점**: 안정적, 빠름, 디버깅 쉬움
+- **단점**: 유연성 낮음, 새로운 패턴 적응 불가
+
+### 멀티 에이전트
+- **장점**: 실시간 반응, 역할 분리, 합의 결정
+- **단점**: 복잡함, 예측 불가능한 상호작용
+
+### 완전 자율 AI ⭐
+- **장점**: 스스로 학습, 전략 진화, 최적화
+- **단점**: LLM 비용 발생, 예측 불가능, 할루시네이션 위험
 
 ## 알림 설정 (선택사항)
 
-Telegram 알림을 추가하려면:
+Telegram 알림을 추가하려면 코드에 다음을 추가:
 
 ```python
-# bot.py에 추가
 import requests
 
 def send_telegram_alert(self, message):
@@ -183,8 +216,8 @@ def send_telegram_alert(self, message):
 
 1. **가스비**: Polygon 네트워크에서도 거래마다 가스비(MATIC)가 발생합니다
 2. **슬리피지**: 유동성이 낮은 시장에서는 예상 가격과 실제 체결 가격이 다를 수 있습니다
-3. **API 제한**: Polymarket API는 rate limit이 있을 수 있습니다
-4. **스마트 컨트랙트 리스크**: Polymarket의 컨트랙트 버그 가능성
+3. **API 비용**: 자율 AI 버전은 OpenAI API를 많이 호출합니다 (월 $50-200 예상)
+4. **LLM 할루시네이션**: AI가 현실과 무관한 결정을 내릴 수 있습니다
 5. **규제 리스크**: 거주 지역의 예측 시장 관련 법규 확인
 
 ## 라이선스
